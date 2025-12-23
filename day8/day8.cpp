@@ -4,7 +4,7 @@
 
 class UnionFind {
 public:
-    UnionFind(int n) : m_parents(n), m_sizes(n, 1) {
+    UnionFind(int n) : m_parents(n), m_sizes(n, 1), m_numGroups(n) {
         std::iota(m_parents.begin(), m_parents.end(), 0);
     }
 
@@ -25,6 +25,7 @@ public:
             return;
         }
 
+        m_numGroups--;
         int x_size = m_sizes[x_parent];
         int y_size = m_sizes[y_parent];
 
@@ -51,9 +52,14 @@ public:
         return actualSizes;
     }
 
+    const int getNumGroups() {
+        return m_numGroups;
+    }
+
 private:
     vector<int> m_parents;
     vector<int> m_sizes;
+    int m_numGroups{-1};
 };
 
 struct Position {
@@ -100,12 +106,25 @@ public:
 
         int product = 1;
         for (int i = 0; i < 3; i++) {
-            cout << "Biggest size: " << sizeHeap.top() << endl;
+            // cout << "Biggest size: " << sizeHeap.top() << endl;
             product *= sizeHeap.top();
             sizeHeap.pop();
         }
 
         return product;
+    }
+
+    UINT64 connectPairsPart2() {
+        UINT64 x_product = 0;
+        while (m_heap.empty() == false && m_circuits.getNumGroups() > 1) {
+            const DistAndPair& top = m_heap.top();
+            x_product = m_positions[top.m_p1].x * m_positions[top.m_p2].x;
+            // cout << "Uniting " << top.m_p1 << " and " << top.m_p2 << endl;
+            m_circuits.unite(top.m_p1, top.m_p2);
+            m_heap.pop();
+        }
+
+        return x_product;
     }
 
 private:
@@ -151,7 +170,7 @@ int main() {
 
     Engineer engineer(inputReader.getLines());
 
-    cout << engineer.connectPairs() << endl;
+    cout << engineer.connectPairsPart2() << endl;
 
     return 0;
 }
