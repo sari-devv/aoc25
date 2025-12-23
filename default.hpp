@@ -28,6 +28,7 @@ using std::list;
 using std::map;
 using std::numeric_limits;
 using std::pair;
+using std::priority_queue;
 using std::queue;
 using std::set;
 using std::stack;
